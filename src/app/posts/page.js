@@ -6,6 +6,8 @@ import { redirect } from "next/navigation";
 import TooltipLink from "@/components/TooltipLink";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import Link from "next/link";
+import DeletePostButton from "@/components/DeletePost";
+import LikeButton from "@/components/LikeButton";
 
 export default async function PostsPage() {
   const { userId } = auth();
@@ -16,12 +18,17 @@ export default async function PostsPage() {
   );
 
   const userHasProfile = profile.rows.length > 0;
+  const profileId = userHasProfile ? profile.rows[0].id : null;
 
-  const posts = await db.query(`
-    SELECT posts_week09.id, profiles_week09.id AS profile_id, profiles_week09.username, posts_week09.content 
+  const posts = await db.query(
+    `
+    SELECT posts_week09.id, posts_week09.clerk_id, profiles_week09.username, posts_week09.content, 
+           EXISTS (SELECT 1 FROM likes_week09 WHERE likes_week09.post_id = posts_week09.id AND likes_week09.user_id = $1) AS is_liked
     FROM posts_week09 
     INNER JOIN profiles_week09 ON posts_week09.clerk_id = profiles_week09.clerk_id
-  `);
+  `,
+    [profileId]
+  );
 
   async function handleCreatePost(formData) {
     "use server";
@@ -73,51 +80,63 @@ export default async function PostsPage() {
               </Link>
             </div>
           )}
+
           <h3 className="text-2xl mb-5">What we are talking about</h3>
-          {posts.rows.map((post) => {
-            return (
-              <div key={post.id} className="border p-4 mb-6 rounded w-full">
-                <h4 className="text-xl mb-2">
-                  <TooltipProvider>
-                    <TooltipLink
-                      href={`/profile/${post.profile_id}`}
-                      linkText={post.username}
-                      tooltipText={`Click here to see ${post.username}'s profile`}
-                    />
-                  </TooltipProvider>{" "}
-                  is saying:
-                </h4>
-                <p>{post.content}</p>
-              </div>
-            );
-          })}
+          {posts.rows.map((post) => (
+            <div
+              key={post.id}
+              className="border p-4 mb-6 rounded w-full relative"
+            >
+              <h4 className="text-xl mb-2">
+                <TooltipProvider>
+                  <TooltipLink
+                    href={`/profile/${post.profile_id}`}
+                    linkText={post.username}
+                    tooltipText={`Click here to see ${post.username}'s profile`}
+                  />
+                </TooltipProvider>{" "}
+                is saying:
+              </h4>
+              <p>{post.content}</p>
+              {userHasProfile && (
+                <LikeButton
+                  postId={post.id}
+                  profileId={profileId}
+                  isLiked={post.is_liked}
+                />
+              )}
+              {post.clerk_id === userId && (
+                <div className="absolute bottom-2 right-2">
+                  <DeletePostButton postId={post.id} userId={userId} />
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </SignedIn>
 
       <SignedOut>
         <div className="w-full max-w-2xl">
           <h3 className="text-2xl mb-5">What we are talking about</h3>
-          {posts.rows.map((post) => {
-            return (
-              <div key={post.id} className="border p-4 mb-6 rounded w-full">
-                <h4 className="text-xl mb-2">
-                  <TooltipProvider>
-                    <TooltipLink
-                      href={`/profile/${post.profile_id}`}
-                      linkText={post.username}
-                      tooltipText={`Click here to see ${post.username}'s profile`}
-                    />
-                  </TooltipProvider>{" "}
-                  is saying:
-                </h4>{" "}
-                <p>{post.content}</p>
-              </div>
-            );
-          })}
+          {posts.rows.map((post) => (
+            <div key={post.id} className="border p-4 mb-6 rounded w-full">
+              <h4 className="text-xl mb-2">
+                <TooltipProvider>
+                  <TooltipLink
+                    href={`/profile/${post.profile_id}`}
+                    linkText={post.username}
+                    tooltipText={`Click here to see ${post.username}'s profile`}
+                  />
+                </TooltipProvider>{" "}
+                is saying:
+              </h4>{" "}
+              <p>{post.content}</p>
+            </div>
+          ))}
 
           <p className="text-center mt-10">Please sign in to add a new post</p>
           <div className="mt-4">
-            <SignInButton className="px-4 py-2 bg-blue-500 text-white rounded  hover:bg-blue-600 transition-colors" />
+            <SignInButton className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" />
           </div>
         </div>
       </SignedOut>
