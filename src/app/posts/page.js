@@ -1,0 +1,102 @@
+import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import { db } from "../utilities/db";
+import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import TooltipLink from "@/components/TooltipLink";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
+
+export default async function PostsPage() {
+  const { userId } = auth();
+
+  const posts = await db.query(`
+    SELECT posts_week09.id, profiles_week09.id AS profile_id, profiles_week09.username, posts_week09.content 
+    FROM posts_week09 
+    INNER JOIN profiles_week09 ON posts_week09.clerk_id = profiles_week09.clerk_id
+  `);
+
+  async function handleCreatePost(formData) {
+    "use server";
+    const content = formData.get("content");
+
+    await db.query(
+      `INSERT INTO posts_week09 (clerk_id, content) VALUES ($1, $2)`,
+      [userId, content]
+    );
+
+    revalidatePath("/posts");
+    redirect("/posts");
+  }
+
+  return (
+    <div className="flex flex-col justify-evenly items-center min-h-screen p-10">
+      <h2 className="text-4xl mb-10">Talkio Feed</h2>
+
+      <SignedIn>
+        <div className="w-full max-w-2xl">
+          <h3 className="text-2xl mb-5">Add New Post</h3>
+          <form action={handleCreatePost} className="mb-10">
+            <textarea
+              name="content"
+              placeholder="Add a new post"
+              className="w-full border p-2 mb-4 rounded text-black"
+            />
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+            >
+              Add Post
+            </button>
+          </form>
+
+          <h3 className="text-2xl mb-5">What we are talking about</h3>
+          {posts.rows.map((post) => {
+            return (
+              <div key={post.id} className="border p-4 mb-6 rounded w-full">
+                <h4 className="text-xl mb-2">
+                  <TooltipProvider>
+                    <TooltipLink
+                      href={`/profile/${post.profile_id}`}
+                      linkText={post.username}
+                      tooltipText={`Click here to see ${post.username}'s profile`}
+                    />
+                  </TooltipProvider>{" "}
+                  is saying:
+                </h4>
+                <p>{post.content}</p>
+              </div>
+            );
+          })}
+        </div>
+      </SignedIn>
+
+      <SignedOut>
+        <div className="w-full max-w-2xl">
+          <h3 className="text-2xl mb-5">What we are talking about</h3>
+          {posts.rows.map((post) => {
+            return (
+              <div key={post.id} className="border p-4 mb-6 rounded w-full">
+                <h4 className="text-xl mb-2">
+                  <TooltipProvider>
+                    <TooltipLink
+                      href={`/profile/${post.profile_id}`}
+                      linkText={post.username}
+                      tooltipText={`Click here to see ${post.username}'s profile`}
+                    />
+                  </TooltipProvider>{" "}
+                  is saying:
+                </h4>{" "}
+                <p>{post.content}</p>
+              </div>
+            );
+          })}
+
+          <p className="text-center mt-10">Please sign in to add a new post</p>
+          <div className="mt-4">
+            <SignInButton className="px-4 py-2 bg-blue-500 text-white rounded  hover:bg-blue-600 transition-colors" />
+          </div>
+        </div>
+      </SignedOut>
+    </div>
+  );
+}
