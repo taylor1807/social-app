@@ -61,18 +61,7 @@ export default async function UpdateProfilePage() {
                 name="username"
                 placeholder="Enter a Username"
                 defaultValue={existingProfile.username}
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-xl mb-2" htmlFor="bio">
-                Biography
-              </label>
-              <textarea
-                className="w-full border p-2 rounded text-black placeholder-gray-500"
-                name="bio"
-                placeholder="Enter a Biography"
-                defaultValue={existingProfile.bio}
+                required
               />
             </div>
 
@@ -112,6 +101,18 @@ export default async function UpdateProfilePage() {
                 name="phone_number"
                 placeholder="Enter Phone Number"
                 defaultValue={existingProfile.phone_number}
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-xl mb-2" htmlFor="bio">
+                Biography
+              </label>
+              <textarea
+                className="w-full border p-2 rounded text-black placeholder-gray-500"
+                name="bio"
+                placeholder="Enter a Biography"
+                defaultValue={existingProfile.bio}
               />
             </div>
 

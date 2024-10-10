@@ -5,9 +5,17 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import TooltipLink from "@/components/TooltipLink";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
+import Link from "next/link";
 
 export default async function PostsPage() {
   const { userId } = auth();
+
+  const profile = await db.query(
+    `SELECT * FROM profiles_week09 WHERE clerk_id = $1`,
+    [userId]
+  );
+
+  const userHasProfile = profile.rows.length > 0;
 
   const posts = await db.query(`
     SELECT posts_week09.id, profiles_week09.id AS profile_id, profiles_week09.username, posts_week09.content 
@@ -34,21 +42,37 @@ export default async function PostsPage() {
 
       <SignedIn>
         <div className="w-full max-w-2xl">
-          <h3 className="text-2xl mb-5">Add New Post</h3>
-          <form action={handleCreatePost} className="mb-10">
-            <textarea
-              name="content"
-              placeholder="Add a new post"
-              className="w-full border p-2 mb-4 rounded text-black"
-            />
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-            >
-              Add Post
-            </button>
-          </form>
-
+          {userHasProfile ? (
+            <>
+              <h3 className="text-2xl mb-5">Add New Post</h3>
+              <form action={handleCreatePost} className="mb-10">
+                <textarea
+                  name="content"
+                  placeholder="Add a new post"
+                  className="w-full border p-2 mb-4 rounded text-black"
+                  required
+                />
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                >
+                  Add Post
+                </button>
+              </form>
+            </>
+          ) : (
+            <div className="text-center p-4 border rounded bg-red-100">
+              <p className="text-black mb-4">
+                Please create a profile before posting.
+              </p>
+              <Link
+                href="/profile/updateProfile"
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+              >
+                Create Profile
+              </Link>
+            </div>
+          )}
           <h3 className="text-2xl mb-5">What we are talking about</h3>
           {posts.rows.map((post) => {
             return (
