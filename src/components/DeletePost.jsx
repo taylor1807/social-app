@@ -1,8 +1,12 @@
 import { db } from "@/app/utilities/db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { CrossCircledIcon } from "@radix-ui/react-icons";
+import TooltipButton from "./TooltipButton";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
 
 export default function DeletePostButton({ postId, userId }) {
+  //function to delete post by current user
   async function handleDelete(formData) {
     "use server";
 
@@ -14,11 +18,13 @@ export default function DeletePostButton({ postId, userId }) {
         "DELETE FROM posts_week09 WHERE id = $1 AND clerk_id = $2",
         [postId, userId]
       );
+      // console.log(`${postId} deleted succesfully`}
     } catch (error) {
-      console.error("Error deleting post:", error);
+      console.error(error);
     }
-
+    // update page after deletion
     revalidatePath("/posts");
+    //redirect after deletion
     redirect("/posts");
   }
 
@@ -26,12 +32,12 @@ export default function DeletePostButton({ postId, userId }) {
     <form action={handleDelete}>
       <input type="hidden" name="postId" value={postId} />
       <input type="hidden" name="userId" value={userId} />
-      <button
-        type="submit"
-        className="text-red-500 bg-black-700 hover:bg-green-600 px-4 py-2 border border-green-500 rounded "
-      >
-        X
-      </button>
+      <TooltipProvider>
+        <TooltipButton
+          buttonText={<CrossCircledIcon />}
+          tooltipText="Delete this post"
+        />
+      </TooltipProvider>
     </form>
   );
 }

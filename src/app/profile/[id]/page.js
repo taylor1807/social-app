@@ -15,25 +15,38 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function ProfilePage({ params }) {
-  console.log("Params object:", params);
+  // console.log(params);
   const { id } = params;
-  console.log("ID:", id);
+  // console.log("ID:", id);
+
   //get the profile from the db
-  const profile = await db.query(
-    "SELECT * FROM profiles_week09 WHERE id = $1",
-    [id]
-  );
+  let profile;
+  try {
+    profile = await db.query("SELECT * FROM profiles_week09 WHERE id = $1", [
+      id,
+    ]);
+  } catch (error) {
+    console.error(error);
+    notFound();
+  }
+
   //if the profile cannot be found redirect to notfound page
   if (profile.rows.length === 0) {
+    console.error(`${id} not found.`);
     notFound();
   }
 
   const userProfile = profile.rows[0];
+
   // getting posts for specific user for the profile page
-  const posts = await db.query(
-    `SELECT * FROM posts_week09 WHERE clerk_id = $1`,
-    [userProfile.clerk_id]
-  );
+  let posts;
+  try {
+    posts = await db.query(`SELECT * FROM posts_week09 WHERE clerk_id = $1`, [
+      userProfile.clerk_id,
+    ]);
+  } catch (error) {
+    console.error(error);
+  }
 
   return (
     <div className="flex flex-col justify-evenly items-center min-h-screen p-10">

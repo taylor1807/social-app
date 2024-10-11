@@ -5,10 +5,13 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import TooltipLink from "@/components/TooltipLink";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
+import TooltipButton from "@/components/TooltipButton";
 import Link from "next/link";
 import DeletePostButton from "@/components/DeletePost";
 import LikeButton from "@/components/LikeButton";
+import { spaceMarine } from "../layout";
 
+//adding metadat plus favicon to the page
 export const metadata = {
   title: "Talkio | Post Feed",
   description: "Talkio Social Chat App",
@@ -18,16 +21,20 @@ export const metadata = {
 };
 
 export default async function PostsPage() {
+  // check user with clerk
   const { userId } = auth();
 
+  // get the current users profile from the db
   const profile = await db.query(
     `SELECT * FROM profiles_week09 WHERE clerk_id = $1`,
     [userId]
   );
 
+  // check to see if the current user has a profile
   const userHasProfile = profile.rows.length > 0;
   const profileId = userHasProfile ? profile.rows[0].id : null;
 
+  // get all posts from the db and check if user has liked them
   const posts = await db.query(
     `
     SELECT posts_week09.id, posts_week09.clerk_id, profiles_week09.id AS profile_id, profiles_week09.username, posts_week09.content, 
@@ -38,22 +45,40 @@ export default async function PostsPage() {
     [profileId]
   );
 
+  // console.log("profile: ", profile);
+  // console.log("posts: ", posts);
+
+  // function to create new post
   async function handleCreatePost(formData) {
     "use server";
     const content = formData.get("content");
 
-    await db.query(
-      `INSERT INTO posts_week09 (clerk_id, content) VALUES ($1, $2)`,
-      [userId, content]
-    );
+    if (!content) {
+      console.error("content cannot be empty.");
+      return;
+    }
 
+    try {
+      await db.query(
+        `INSERT INTO posts_week09 (clerk_id, content) VALUES ($1, $2)`,
+        [userId, content]
+      );
+      // console.log("success");
+    } catch (error) {
+      console.error("problem creating post:", error);
+    }
+
+    // revalidate posts page
     revalidatePath("/posts");
+    // redirect to posts page
     redirect("/posts");
   }
 
   return (
     <div className="flex flex-col justify-evenly items-center min-h-screen p-10">
-      <h2 className="text-4xl mb-10">Talkio Feed</h2>
+      <h2 className="text-4xl mb-10">
+        <span className="talkio">🗣️Talkio🗣️</span> Feed
+      </h2>
 
       <SignedIn>
         <div className="w-full max-w-2xl">
@@ -67,15 +92,16 @@ export default async function PostsPage() {
                   className="w-full border p-2 mb-4 rounded text-black"
                   required
                 />
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                >
-                  Add Post
-                </button>
+                <TooltipProvider>
+                  <TooltipButton
+                    buttonText="Add Post"
+                    tooltipText="Click to add your post"
+                  />
+                </TooltipProvider>
               </form>
             </>
           ) : (
+            // if user has not set up profile yet ask to create one
             <div className="text-center p-4 border rounded bg-red-100">
               <p className="text-black mb-4">
                 Please create a profile before posting.
@@ -99,6 +125,7 @@ export default async function PostsPage() {
                 <TooltipProvider>
                   <TooltipLink
                     href={`/profile/${post.profile_id}`}
+                    className={spaceMarine.variable}
                     linkText={post.username}
                     tooltipText={`Click here to see ${post.username}'s profile`}
                   />
@@ -106,6 +133,7 @@ export default async function PostsPage() {
                 is saying:
               </h4>
               <p>{post.content}</p>
+
               {userHasProfile && (
                 <LikeButton
                   postId={post.id}
@@ -113,6 +141,7 @@ export default async function PostsPage() {
                   isLiked={post.is_liked}
                 />
               )}
+
               {post.clerk_id === userId && (
                 <div className="absolute bottom-2 right-2">
                   <DeletePostButton postId={post.id} userId={userId} />

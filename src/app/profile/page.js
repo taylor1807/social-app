@@ -13,15 +13,19 @@ export const metadata = {
 };
 
 export default async function ProfilePage() {
+  //check user with clerk
   const { userId } = auth();
 
   let profile = null;
 
+  //if ok get profile info
   if (userId) {
     const result = await db.query(
       `SELECT * FROM profiles_week09 WHERE clerk_id = $1`,
       [userId]
     );
+
+    // console.log(result)
 
     if (result.rows.length > 0) {
       profile = result.rows[0];
@@ -33,6 +37,7 @@ export default async function ProfilePage() {
         profile.clerk_id,
       ])
     : [];
+  // console.log(posts)
 
   return (
     <div className="flex flex-col justify-evenly items-center min-h-screen p-10">

@@ -8,6 +8,7 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
+import { Londrina } from "@/app/layout";
 
 export default function Navbar() {
   return (
@@ -16,16 +17,19 @@ export default function Navbar() {
         <TooltipProvider>
           <TooltipLink
             href="/"
+            className={Londrina.className}
             linkText="Home"
             tooltipText={"Click here to visit the HomePage"}
           />
           <TooltipLink
             href="/posts"
+            className={Londrina.className}
             linkText="Feed"
             tooltipText="Click here to view the posts feed"
           />
           <TooltipLink
             href="/profile"
+            className={Londrina.className}
             linkText="Profile"
             tooltipText="Click here to view/update your profile"
           />
