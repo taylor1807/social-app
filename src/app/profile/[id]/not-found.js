@@ -1,3 +1,11 @@
+export const metadata = {
+  title: "Talkio | 404-User Not Found",
+  description: "Talkio Social Chat App",
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
+
 export default function NotFoundPage() {
   return (
     <div>

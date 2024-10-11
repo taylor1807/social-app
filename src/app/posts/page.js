@@ -9,6 +9,14 @@ import Link from "next/link";
 import DeletePostButton from "@/components/DeletePost";
 import LikeButton from "@/components/LikeButton";
 
+export const metadata = {
+  title: "Talkio | Post Feed",
+  description: "Talkio Social Chat App",
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
+
 export default async function PostsPage() {
   const { userId } = auth();
 
@@ -22,7 +30,7 @@ export default async function PostsPage() {
 
   const posts = await db.query(
     `
-    SELECT posts_week09.id, posts_week09.clerk_id, profiles_week09.username, posts_week09.content, 
+    SELECT posts_week09.id, posts_week09.clerk_id, profiles_week09.id AS profile_id, profiles_week09.username, posts_week09.content, 
            EXISTS (SELECT 1 FROM likes_week09 WHERE likes_week09.post_id = posts_week09.id AND likes_week09.user_id = $1) AS is_liked
     FROM posts_week09 
     INNER JOIN profiles_week09 ON posts_week09.clerk_id = profiles_week09.clerk_id

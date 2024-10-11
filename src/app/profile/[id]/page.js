@@ -1,20 +1,35 @@
 import { db } from "@/app/utilities/db";
 import { notFound } from "next/navigation";
+
+export async function generateMetadata({ params }) {
+  const user = (
+    await db.query("SELECT * FROM profiles_week09 WHERE id = $1", [params.id])
+  ).rows[0];
+  return {
+    title: `Talkio | ${user.username}'s profile`,
+    description: `Profile Page for  ${user.username}`,
+    icons: {
+      icon: "/favicon.ico",
+    },
+  };
+}
+
 export default async function ProfilePage({ params }) {
+  console.log("Params object:", params);
   const { id } = params;
   console.log("ID:", id);
-
+  //get the profile from the db
   const profile = await db.query(
     "SELECT * FROM profiles_week09 WHERE id = $1",
     [id]
   );
-
+  //if the profile cannot be found redirect to notfound page
   if (profile.rows.length === 0) {
     notFound();
   }
 
   const userProfile = profile.rows[0];
-
+  // getting posts for specific user for the profile page
   const posts = await db.query(
     `SELECT * FROM posts_week09 WHERE clerk_id = $1`,
     [userProfile.clerk_id]

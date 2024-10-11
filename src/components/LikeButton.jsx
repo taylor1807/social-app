@@ -9,13 +9,11 @@ export default async function LikeButton({ postId, profileId, isLiked }) {
     const action = formData.get("action");
 
     if (action === "like") {
-      // Add like
       await db.query(
         `INSERT INTO likes_week09 (user_id, post_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
         [profileId, postId]
       );
     } else if (action === "unlike") {
-      // Remove like
       await db.query(
         `DELETE FROM likes_week09 WHERE user_id = $1 AND post_id = $2`,
         [profileId, postId]

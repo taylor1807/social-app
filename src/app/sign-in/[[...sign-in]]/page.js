@@ -1,5 +1,13 @@
 import { SignIn } from "@clerk/nextjs";
 
+export const metadata = {
+  title: "Talkio | Sign-In",
+  description: "Talkio Social Chat App",
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
+
 export default function SignInPage() {
   return (
     <div className="flex justify-center content-center">

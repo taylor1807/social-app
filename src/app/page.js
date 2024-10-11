@@ -1,6 +1,14 @@
 import TooltipLink from "@/components/TooltipLink";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 
+export const metadata = {
+  title: "Talkio | Home",
+  description: "Talkio Social Chat App",
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
+
 export default function Home() {
   return (
     <div className="flex flex-col justify-evenly items-center h-screen p-10">

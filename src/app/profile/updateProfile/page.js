@@ -4,6 +4,14 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+export const metadata = {
+  title: "Talkio | Update Profile",
+  description: "Talkio Social Chat App",
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
+
 export default async function UpdateProfilePage() {
   const { userId } = auth();
 

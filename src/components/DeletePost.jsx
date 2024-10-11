@@ -10,7 +10,6 @@ export default function DeletePostButton({ postId, userId }) {
     const userId = formData.get("userId");
 
     try {
-      // Ensure that only posts created by the user are deleted
       await db.query(
         "DELETE FROM posts_week09 WHERE id = $1 AND clerk_id = $2",
         [postId, userId]

@@ -4,6 +4,14 @@ import { auth } from "@clerk/nextjs/server";
 import TooltipLink from "@/components/TooltipLink";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 
+export const metadata = {
+  title: "Talkio | Profile",
+  description: "Talkio Social Chat App",
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
+
 export default async function ProfilePage() {
   const { userId } = auth();
 
@@ -90,7 +98,7 @@ export default async function ProfilePage() {
           <div className="border p-6 mb-6 rounded w-full">
             <h2 className="text-2xl mb-5">Profile</h2>
             <p className="text-xl">
-              You need to sign in to view or update your profile.
+              Please sign in to view or update your profile.
             </p>
           </div>
           <div className="text-center mt-10">
