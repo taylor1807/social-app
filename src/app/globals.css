@@ -31,3 +31,6 @@ body {
 .title {
   font-family: var(--font-spicy);
 }
+.marine {
+  font-family: var(--font-spaceMarine);
+}

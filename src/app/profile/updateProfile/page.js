@@ -53,7 +53,7 @@ export default async function UpdateProfilePage() {
           [username, bio, email, dob, phone, userId]
         );
       }
-      console.log("redirecting");
+      // console.log("redirecting");
       revalidatePath(`/profile`);
       redirect(`/profile`);
     } catch (error) {
