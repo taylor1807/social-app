@@ -28,3 +28,6 @@ body {
 .talkio {
   font-family: var(--font-sixtyfour);
 }
+.title {
+  font-family: var(--font-spicy);
+}

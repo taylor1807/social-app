@@ -1,6 +1,6 @@
 import localFont from "next/font/local";
 import "./globals.css";
-import { Sixtyfour, Londrina_Sketch } from "next/font/google";
+import { Sixtyfour, Londrina_Sketch, Spicy_Rice } from "next/font/google";
 
 import Navbar from "@/components/Navbar";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -21,6 +21,11 @@ export const spaceMarine = localFont({
   variable: "--font-spaceMarine",
 });
 
+export const spicyRice = Spicy_Rice({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-spicy",
+});
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -41,7 +46,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${sixtyFour.variable} ${Londrina.variable} ${spaceMarine.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${sixtyFour.variable} ${Londrina.variable} ${spaceMarine.variable} ${spicyRice.variable} antialiased`}
       >
         <ClerkProvider>
           <Navbar />

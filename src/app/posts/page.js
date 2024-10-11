@@ -65,7 +65,7 @@ export default async function PostsPage() {
       );
       // console.log("success");
     } catch (error) {
-      console.error("problem creating post:", error);
+      console.error(error);
     }
 
     // revalidate posts page
@@ -77,14 +77,17 @@ export default async function PostsPage() {
   return (
     <div className="flex flex-col justify-evenly items-center min-h-screen p-10">
       <h2 className="text-4xl mb-10">
-        <span className="talkio">🗣️Talkio🗣️</span> Feed
+        <span className="talkio">🗣️Talkio🗣️</span>{" "}
+        <span className="title">Feed</span>
       </h2>
 
       <SignedIn>
         <div className="w-full max-w-2xl">
           {userHasProfile ? (
             <>
-              <h3 className="text-2xl mb-5">Add New Post</h3>
+              <h3 className="text-2xl mb-5">
+                <span className="title">Add New Post</span>
+              </h3>
               <form action={handleCreatePost} className="mb-10">
                 <textarea
                   name="content"
@@ -104,7 +107,9 @@ export default async function PostsPage() {
             // if user has not set up profile yet ask to create one
             <div className="text-center p-4 border rounded bg-red-100">
               <p className="text-black mb-4">
-                Please create a profile before posting.
+                <span className="title">
+                  Please create a profile before posting.
+                </span>
               </p>
               <Link
                 href="/profile/updateProfile"
@@ -115,7 +120,9 @@ export default async function PostsPage() {
             </div>
           )}
 
-          <h3 className="text-2xl mb-5">What we are talking about</h3>
+          <h3 className="text-2xl mb-5">
+            <span className="title">What we are talking about</span>
+          </h3>
           {posts.rows.map((post) => (
             <div
               key={post.id}
@@ -130,7 +137,7 @@ export default async function PostsPage() {
                     tooltipText={`Click here to see ${post.username}'s profile`}
                   />
                 </TooltipProvider>{" "}
-                is saying:
+                <span className="title">is saying:</span>
               </h4>
               <p>{post.content}</p>
 
@@ -154,7 +161,9 @@ export default async function PostsPage() {
 
       <SignedOut>
         <div className="w-full max-w-2xl">
-          <h3 className="text-2xl mb-5">What we are talking about</h3>
+          <h3 className="text-2xl mb-5">
+            <span className="title">What we are talking about</span>
+          </h3>
           {posts.rows.map((post) => (
             <div key={post.id} className="border p-4 mb-6 rounded w-full">
               <h4 className="text-xl mb-2">
@@ -165,13 +174,15 @@ export default async function PostsPage() {
                     tooltipText={`Click here to see ${post.username}'s profile`}
                   />
                 </TooltipProvider>{" "}
-                is saying:
-              </h4>{" "}
+                <span className="title">is saying:</span>
+              </h4>
               <p>{post.content}</p>
             </div>
           ))}
 
-          <p className="text-center mt-10">Please sign in to add a new post</p>
+          <p className="text-center mt-10">
+            <span className="title">Please sign in to add a new post</span>
+          </p>
           <div className="mt-4">
             <SignInButton className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" />
           </div>

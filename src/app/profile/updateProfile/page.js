@@ -53,6 +53,7 @@ export default async function UpdateProfilePage() {
           [username, bio, email, dob, phone, userId]
         );
       }
+      console.log("redirecting");
       revalidatePath(`/profile`);
       redirect(`/profile`);
     } catch (error) {
@@ -62,17 +63,20 @@ export default async function UpdateProfilePage() {
 
   return (
     <div className="flex flex-col justify-evenly items-center min-h-screen p-10">
-      <h2 className="text-4xl mb-10">Update Profile</h2>
+      <h2 className="text-4xl mb-10">
+        <span className="title">Update Profile</span>
+      </h2>
 
       <SignedIn>
         <div className="w-full max-w-2xl">
           <form
             action={handleUpdateProfile}
+            method="post"
             className="mb-10 border p-4 rounded"
           >
             <div className="mb-4">
               <label className="block text-xl mb-2" htmlFor="username">
-                Username
+                <span className="title">Username</span>
               </label>
               <input
                 className="w-full border p-2 rounded text-black placeholder-gray-500"
@@ -86,7 +90,7 @@ export default async function UpdateProfilePage() {
 
             <div className="mb-4">
               <label className="block text-xl mb-2" htmlFor="email">
-                Email
+                <span className="title">Email</span>
               </label>
               <input
                 className="w-full border p-2 rounded text-black placeholder-gray-500"
@@ -99,7 +103,7 @@ export default async function UpdateProfilePage() {
 
             <div className="mb-4">
               <label className="block text-xl mb-2" htmlFor="date_of_birth">
-                Date of Birth
+                <span className="title">Date of Birth</span>
               </label>
               <input
                 className="w-full border p-2 rounded text-black placeholder-gray-500"
@@ -112,7 +116,7 @@ export default async function UpdateProfilePage() {
 
             <div className="mb-4">
               <label className="block text-xl mb-2" htmlFor="phone_number">
-                Phone Number
+                <span className="title">Phone Number</span>
               </label>
               <input
                 className="w-full border p-2 rounded text-black placeholder-gray-500"
@@ -125,7 +129,7 @@ export default async function UpdateProfilePage() {
 
             <div className="mb-4">
               <label className="block text-xl mb-2" htmlFor="bio">
-                Biography
+                <span className="title">Biography</span>
               </label>
               <textarea
                 className="w-full border p-2 rounded text-black placeholder-gray-500"
@@ -148,7 +152,9 @@ export default async function UpdateProfilePage() {
       <SignedOut>
         <div className="w-full max-w-2xl">
           <p className="text-center text-xl mb-4">
-            You must be signed in to update your profile.
+            <span className="title">
+              You must be signed in to update your profile.
+            </span>
           </p>
           <div className="text-center mt-4">
             <SignInButton className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors" />

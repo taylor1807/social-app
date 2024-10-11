@@ -17,7 +17,9 @@ export default function Home() {
         🗣️<span className="talkio">Talkio</span>🗣️
       </h1>
       <p className="text-3xl text-center">
-        Welcome to Talkio, come sign in and chat about whatever you want.
+        <span className="title">
+          Welcome to Talkio, come sign in and chat about whatever you want.
+        </span>
       </p>
       <div className="text-5xl">
         <TooltipProvider>

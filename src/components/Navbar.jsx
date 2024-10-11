@@ -8,7 +8,7 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
-import { Londrina } from "@/app/layout";
+import { spicyRice } from "@/app/layout";
 
 export default function Navbar() {
   return (
@@ -17,19 +17,19 @@ export default function Navbar() {
         <TooltipProvider>
           <TooltipLink
             href="/"
-            className={Londrina.className}
+            className={spicyRice.className}
             linkText="Home"
             tooltipText={"Click here to visit the HomePage"}
           />
           <TooltipLink
             href="/posts"
-            className={Londrina.className}
+            className={spicyRice.className}
             linkText="Feed"
             tooltipText="Click here to view the posts feed"
           />
           <TooltipLink
             href="/profile"
-            className={Londrina.className}
+            className={spicyRice.className}
             linkText="Profile"
             tooltipText="Click here to view/update your profile"
           />
@@ -39,7 +39,20 @@ export default function Navbar() {
           <SignInButton className="px-4 py-2 bg-blue-500 text-white rounded  hover:bg-blue-600 transition-colors" />
         </SignedOut>
         <SignedIn>
-          <UserButton />
+          <UserButton
+            appearance={{
+              variables: {
+                colorPrimary: "#1E3A8A",
+                colorBackground: "#ADD8E6",
+              },
+              elements: {
+                card: "shadow-lg rounded-lg bg-blue-100",
+                headerTitle: "text-4xl text-indigo-700",
+                inputField: "border-gray-300",
+                button: "bg-indigo-700 text-white hover:bg-indigo-800",
+              },
+            }}
+          />
         </SignedIn>
       </nav>
     </div>
