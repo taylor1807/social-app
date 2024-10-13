@@ -53,6 +53,7 @@ export default async function UpdateProfilePage() {
           [username, bio, email, dob, phone, userId]
         );
       }
+
       // console.log("redirecting");
       revalidatePath(`/profile`);
       redirect(`/profile`);
@@ -71,7 +72,6 @@ export default async function UpdateProfilePage() {
         <div className="w-full max-w-2xl">
           <form
             action={handleUpdateProfile}
-            method="post"
             className="mb-10 border p-4 rounded"
           >
             <div className="mb-4">

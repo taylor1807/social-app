@@ -1,0 +1,45 @@
+to do 
+
+*-completed
+
+mvp
+
+* ui styling
+* style tooltip links 
+* metadata
+* favicon
+
+stretch
+
+* style clerk components (eg sign in/sign up)
+* try stitches for components
+* create links to view other users profiles
+* another radix ui component (used icons/and 2 versions of tooltip Link    * and Button)
+* import and update fonts
+
+add a touch of framer motion - didn't add due to being client side and wanted as much as possible running on the server 
+
+* likes button
+* delete post button (only logged in users posts)
+followers button
+comments to posts (maybe add another table)
+
+favicon
+https://github.com/vercel/next.js/discussions/50704
+
+stitches
+https://stitches.dev/
+
+likes 
+reddit
+
+delete
+week08 project
+
+posts
+[id]
+profile
+update profile
+deletepost
+likebutton
+navbar
